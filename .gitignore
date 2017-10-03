@@ -1,0 +1,4 @@
+bin/*.*
+dump/*.*
+!bin/README.md
+images/*.*

@@ -1,0 +1,19 @@
+{
+    "lossy": false,
+    "ffmpegpath":"bin/ffmpeg.exe",
+    "dumppath":"dump",
+    "parameter": {
+        "mp3": {
+            "bitrate":"160k",
+            "numchannels":2,
+            "samplerate":44100
+        },
+        "flac": {
+            "bitrate":"160k",
+            "numchannels":2,
+            "samplerate":44100,
+            "compression":12
+        }
+    },
+    "loglevel":"quiet"
+}
