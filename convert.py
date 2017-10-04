@@ -2,6 +2,7 @@ import subprocess
 import os
 import json
 
+
 def main():
     try:
         with open('config.json', 'r') as f:

@@ -2,3 +2,4 @@ bin/*.*
 dump/*.*
 !bin/README.md
 images/*.*
+auth.json
