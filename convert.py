@@ -22,6 +22,8 @@ def main():
         command = path + " -i " + filename + loglevel + " -ab " + bitrate + " -ac " + channels + " -ar " + samplerate + " -vn " + dumppath + "\output." + targetformat
         #command = path + "\\bin\\ffmpeg.exe -i dump\\012.mp4 -r 60 -s 1920x1080 -f image2 images\\foo-%03d.png"
         #command = path + "\\bin\\ffmpeg.exe -f image2 -framerate 60 -i images\\foo-%03d.png -s 1920x1080 foo.avi"
+        #print(filename)
+        #command = path + " -i dump\\sa.mp3 -f segment -segment_time 5 -c copy out%03d.mp3"
         subprocess.call(command, shell=True)
     except KeyError:
         print("Configuration JSON file error")

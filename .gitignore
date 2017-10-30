@@ -3,3 +3,4 @@ dump/*.*
 !bin/README.md
 images/*.*
 auth.json
+\.idea/

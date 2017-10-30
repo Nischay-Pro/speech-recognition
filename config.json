@@ -1,5 +1,5 @@
 {
-    "lossy": false,
+    "lossy": true,
     "ffmpegpath":"bin/ffmpeg.exe",
     "dumppath":"dump",
     "parameter": {
