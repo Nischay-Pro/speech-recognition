@@ -6,6 +6,7 @@ import wave
 import os
 import sys
 import errno
+import shutil
 
 def read_audio(WAVE_FILENAME):
     with open(WAVE_FILENAME, 'rb') as f:
@@ -49,7 +50,7 @@ def subtitlify(count, text, time):
     else:
         starttime = str(stringifytime((int(count) - 1) * int(time)))
         endtime = str(stringifytime(int(count) * int(time)))
-        return str(int(count)) + "\n" + starttime + " --> " + endtime + "\n" + text["_text"]
+        return str(int(count)) + "\n" + starttime + " --> " + endtime + "\n" + text["_text"] + "\n"
 
 def main():
     with open('config.json', 'r') as f:
@@ -91,7 +92,9 @@ def main():
         else:
             f.write('\n' + texttowrite)
         f.close()
-    progress("Transcribed Successfully")
+    print("Cleaning up Temporary Folder")
+    shutil.rmtree("temp", ignore_errors=False, onerror=None)
+    print("Transcribed Successfully")
 
 if __name__ == "__main__":
     print("Loading Configuration")
