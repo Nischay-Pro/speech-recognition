@@ -4,3 +4,4 @@ dump/*.*
 images/*.*
 auth.json
 \.idea/
+temp/*.*

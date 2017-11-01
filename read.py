@@ -37,8 +37,18 @@ def RecognizeSpeech(AUDIO_FILENAME):
     return text
 
 if __name__ == "__main__":
-    text =  RecognizeSpeech(input("Enter your file path: "))
+    with open('config.json', 'r') as f:
+        ARR = json.load(f)
+    path = os.path.abspath(input("Enter your file path: "))
+    splittime = str((ARR)['split-time'])
+    exepath = str((ARR)['ffmpegpath'])
+    try:
+        os.makedirs("temp")
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
     #text =  RecognizeSpeech("C:\\Users\\Nisch\\Desktop\\speech-recog\\bin\\out" + '{0:03d}'.format(i) + ".mp3")
+    command = exepath + " -i " + path + " -f segment -segment_time " + split-time + " -c copy temp\\out%04d.mp3"
     f = open('transcript.txt','a+')
     f.write('\n' + text["_text"])
     f.close()

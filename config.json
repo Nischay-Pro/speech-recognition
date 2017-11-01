@@ -15,5 +15,12 @@
             "compression":12
         }
     },
-    "loglevel":"quiet"
+    "loglevel":"quiet",
+    "split-time":3,
+    "auth":{
+        "wit.ai":{
+            "endpoint":"https://api.wit.ai/speech",
+            "witaccesstoken":"S4OWJR36ESNBDLNEMPTUEORMEVZWRSX7"
+        }
+    }
 }
