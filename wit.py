@@ -32,6 +32,25 @@ def progress(count, total, suffix=''):
     sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', suffix))
     sys.stdout.flush()
 
+def stringifytime(seconds):
+    #print(seconds)
+    if(seconds==0):
+        return "00:00:00,000"
+    else:
+        m, s = divmod(seconds, 60)
+        h, m = divmod(m, 60)
+        return "%02d:%02d:%02d,000" % (h, m, s)
+
+def subtitlify(count, text, time):
+    if("error" in text):
+        starttime = str(stringifytime((int(count) - 1) * int(time)))
+        endtime = str(stringifytime(int(count) * int(time)))
+        return str(int(count)) + "\n" + starttime + " --> " + endtime + "\n" + ""
+    else:
+        starttime = str(stringifytime((int(count) - 1) * int(time)))
+        endtime = str(stringifytime(int(count) * int(time)))
+        return str(int(count)) + "\n" + starttime + " --> " + endtime + "\n" + text["_text"]
+
 def main():
     with open('config.json', 'r') as f:
         ARR = json.load(f)
@@ -59,10 +78,21 @@ def main():
     for i in range(0,filecount + 1):
         text =  RecognizeSpeech(os.path.abspath("temp\\out" + '{0:04d}'.format(i) + ".mp3"),API_ENDPOINT,wit_access_token)
         progress(i,filecount," Transcribe Progress")
-        f = open('transcript.txt','a+')
-        f.write('\n' + text["_text"])
+        f = open('transcript.srt','a+')
+        #print(text)
+        #print(i + 1, text["_text"], int(splittime))
+        try:
+            texttowrite = subtitlify(i + 1, text, int(splittime))
+        except KeyError as exception:
+            print(text)
+            raise  
+        if(i == 0):
+            f.write(texttowrite)
+        else:
+            f.write('\n' + texttowrite)
         f.close()
     progress("Transcribed Successfully")
+
 if __name__ == "__main__":
     print("Loading Configuration")
     main()
