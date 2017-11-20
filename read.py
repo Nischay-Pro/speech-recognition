@@ -2,6 +2,8 @@ import requests
 import json
 import pyaudio
 import wave
+import errno
+import os
 
 
 API_ENDPOINT = 'https://api.wit.ai/speech'

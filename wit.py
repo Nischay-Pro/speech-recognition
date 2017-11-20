@@ -33,23 +33,27 @@ def progress(count, total, suffix=''):
     sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', suffix))
     sys.stdout.flush()
 
-def stringifytime(seconds):
+def stringifytime(seconds,milliseconds=0,ffmpeg=False):
     #print(seconds)
+    seconds = int(seconds)
+    milliseconds = int(milliseconds)
     if(seconds==0):
-        return "00:00:00,000"
+        if(ffmpeg == False):
+            return "00:00:00," + '{:<03d}'.format(milliseconds)
+        else:
+            return "00:00:00." + '{:<03d}'.format(milliseconds)
     else:
         m, s = divmod(seconds, 60)
         h, m = divmod(m, 60)
-        return "%02d:%02d:%02d,000" % (h, m, s)
+        if(ffmpeg == False):
+            return "%02d:%02d:%02d," % (h, m, s) + '{:<03d}'.format(milliseconds)
+        else:
+            return "%02d:%02d:%02d." % (h, m, s) + '{:<03d}'.format(milliseconds)
 
-def subtitlify(count, text, time):
+def subtitlify(text,count, starttime,endtime):
     if("error" in text):
-        starttime = str(stringifytime((int(count) - 1) * int(time)))
-        endtime = str(stringifytime(int(count) * int(time)))
         return str(int(count)) + "\n" + starttime + " --> " + endtime + "\n" + ""
     else:
-        starttime = str(stringifytime((int(count) - 1) * int(time)))
-        endtime = str(stringifytime(int(count) * int(time)))
         return str(int(count)) + "\n" + starttime + " --> " + endtime + "\n" + text["_text"] + "\n"
 
 def main():
@@ -58,7 +62,9 @@ def main():
     path = os.path.abspath((ARR)['ffmpegpath'])
     API_ENDPOINT = str((ARR)['auth']['wit.ai']['endpoint'])
     wit_access_token = str((ARR)['auth']['wit.ai']['witaccesstoken'])
-    splittime = str((ARR)['split-time'])
+    splittime = input("Enter Speech Range JSON file path: ")
+    with open(splittime, 'r') as f:
+        splittime = json.load(f)
     #print(API_ENDPOINT)
     #print(wit_access_token)
     print("Configuration Loaded")
@@ -71,8 +77,16 @@ def main():
     print("Created Temporary Directory")
     filepath = os.path.abspath(input("Enter your file path: "))
     print("Generating mp3 audio subparts")
-    command = path + " -i " + filepath + " -f segment -segment_time " + splittime + " -c copy temp\\out%04d.mp3"
-    subprocess.call(command, shell=True)
+    idval = 0
+    for item in splittime:
+        start_time = stringifytime(str(item['speech_begin']).split(".")[0],str(item['speech_begin']).split(".")[1],True)
+        end_time = stringifytime(str(item['speech_end']).split(".")[0],str(item['speech_end']).split(".")[1],True)
+        print(start_time)
+        print(end_time)
+        print("next")
+        command = path + " -i " + filepath + " -ss " + start_time  + " -to " + end_time + " -c copy temp\\out" + '{0:04d}'.format(idval) + ".mp3"
+        subprocess.call(command, shell=True)
+        idval += 1
     filecount = len(next(os.walk("temp"))[2])
     print(str(filecount) + " files generated")
     print("Beginning Subtitle Generation")
@@ -83,7 +97,9 @@ def main():
         #print(text)
         #print(i + 1, text["_text"], int(splittime))
         try:
-            texttowrite = subtitlify(i + 1, text, int(splittime))
+            start_time = stringifytime(str(splittime[i]['speech_begin']).split(".")[0],str(splittime[i]['speech_begin']).split(".")[1],True)
+            end_time = stringifytime(str(splittime[i]['speech_end']).split(".")[0],str(splittime[i]['speech_end']).split(".")[1],True)
+            texttowrite = subtitlify(text, i + 1, start_time,end_time)
         except KeyError as exception:
             print(text)
             raise  
