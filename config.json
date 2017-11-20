@@ -6,7 +6,7 @@
         "mp3": {
             "bitrate":"160k",
             "numchannels":2,
-            "samplerate":44100
+            "samplerate":32000
         },
         "flac": {
             "bitrate":"160k",
